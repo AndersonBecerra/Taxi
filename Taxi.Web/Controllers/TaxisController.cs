@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Taxi.Web.Data;
@@ -46,8 +47,6 @@ namespace Taxi.Web.Controllers
         }
 
         // POST: Taxis/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(TaxiEntity taxiEntity)
@@ -56,8 +55,22 @@ namespace Taxi.Web.Controllers
             {
                 taxiEntity.Plaque = taxiEntity.Plaque.ToUpper();
                 _context.Add(taxiEntity);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    if (ex.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, $"The plaque {taxiEntity.Plaque} already exists.");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, ex.InnerException.Message);
+                    }                    
+                }
             }
             return View(taxiEntity);
         }
@@ -79,8 +92,6 @@ namespace Taxi.Web.Controllers
         }
 
         // POST: Taxis/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, TaxiEntity taxiEntity)
@@ -94,8 +105,22 @@ namespace Taxi.Web.Controllers
             {
                 taxiEntity.Plaque = taxiEntity.Plaque.ToUpper();
                 _context.Update(taxiEntity);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    if (ex.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, $"The plaque {taxiEntity.Plaque} already exists.");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, ex.InnerException.Message);
+                    }
+                }
             }
             return View(taxiEntity);
         }
