@@ -2,6 +2,7 @@
 using Prism;
 using Prism.Ioc;
 using Syncfusion.SfBusyIndicator.XForms.iOS;
+using Syncfusion.SfRating.XForms.iOS;
 using UIKit;
 
 
@@ -15,6 +16,7 @@ namespace Taxi.Prism.iOS
             global::Xamarin.Forms.Forms.Init();
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
             new SfBusyIndicatorRenderer();
+            new SfRatingRenderer();
             Xamarin.FormsMaps.Init();
             LoadApplication(new App(new iOSInitializer()));
 
