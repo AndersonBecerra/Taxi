@@ -16,9 +16,11 @@ namespace Taxi.Web.Helpers
         Task AddUserToRoleAsync(UserEntity user, string roleName);
 
         Task<bool> IsUserInRoleAsync(UserEntity user, string roleName);
+
         Task<SignInResult> LoginAsync(LoginViewModel model);
 
         Task LogoutAsync();
 
+        Task<UserEntity> AddUserAsync(AddUserViewModel model, string path);
     }
 }
