@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Threading.Tasks;
 using Taxi.Common.Enums;
 using Taxi.Web.Data.Entities;
@@ -43,9 +44,13 @@ namespace Taxi.Web.Helpers
             }
         }
 
-        public async Task<UserEntity> GetUserByEmailAsync(string email)
+        public async Task<UserEntity> GetUserAsync(string email)
         {
             return await _userManager.FindByEmailAsync(email);
+        }
+        public async Task<UserEntity> GetUserAsync(Guid userId)
+        {
+            return await _userManager.FindByIdAsync(userId.ToString());
         }
 
         public async Task<bool> IsUserInRoleAsync(UserEntity user, string roleName)
@@ -88,7 +93,7 @@ namespace Taxi.Web.Helpers
                 return null;
             }
 
-            UserEntity newUser = await GetUserByEmailAsync(model.Username);
+            UserEntity newUser = await GetUserAsync(model.Username);
             await AddUserToRoleAsync(newUser, userEntity.UserType.ToString());
             return newUser;
         }
@@ -100,6 +105,11 @@ namespace Taxi.Web.Helpers
         public async Task<IdentityResult> UpdateUserAsync(UserEntity user)
         {
             return await _userManager.UpdateAsync(user);
+        }
+
+        public async Task<SignInResult> ValidatePasswordAsync(UserEntity user, string password)
+        {
+            return await _signInManager.CheckPasswordSignInAsync(user, password, false);
         }
 
     }
